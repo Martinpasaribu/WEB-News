@@ -20,7 +20,7 @@ let b = ''
 app.use(express.json());
 
 app.use(cors({
-    origin: ["", "https://www.postman.com", "http://localhost:3000","http://localhost:3001", "http://localhost:5000", "https://toko-aek-nauli-client.vercel.app"],
+    origin: ["", "https://www.postman.com", "http://localhost:3000","http://localhost:3001", "http://localhost:5000", "https://news-com.vercel.app"],
     methods: ["POST", "GET", "PATCH", "DELETE",'PUT', "OPTIONS"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
