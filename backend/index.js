@@ -26,17 +26,28 @@ app.use(cors({
 // Endpoint untuk meneruskan permintaan ke API berita
 app.get('/api/news', async (req, res) => {
     try {
-      const jsonData = await readFile('./public/bisnis2.json', 'utf8');
+      const jsonData = await readFile('./bisnis2.json', 'utf8');
       const x = JSON.parse(jsonData);
-      a = x.slice(0, 7);
-    //   x.forEach((item) => {
-    //     item.publishedAt = isoToCustomFormat(item.publishedAt);
-    //   });
-      res.json(x.slice(0, 7));
+  
+      // Pastikan x adalah array
+      if (!Array.isArray(x)) {
+        throw new Error('Data yang dibaca bukanlah array');
+      }
+  
+      // Pastikan x memiliki minimal 7 item
+      if (x.length < 7) {
+        throw new Error('Data yang dibaca memiliki kurang dari 7 item');
+      }
+  
+      // Lakukan pemangkasan hanya jika x memiliki lebih dari 7 item
+      const slicedData = x.slice(0, 7);
+  
+      res.json(slicedData);
     } catch (error) {
-      res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json news' });
+      res.status(500).json({ error: `Terjadi kesalahan saat mengambil data json news: ${error.message}` });
     }
   });
+  
   
   // Endpoint untuk meneruskan permintaan ke API berita
   app.get('/api/bisnis', async (req, res) => {
