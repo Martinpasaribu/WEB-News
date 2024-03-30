@@ -3,11 +3,15 @@ import  express from 'express';
 import axios from 'axios'
 import cors from 'cors'
 import fs from 'fs'
-import { readFile, writeFile } from 'fs/promises'; // Gunakan fs/promises untuk operasi baca tulis asinkron
 
+// Baca isi file JSON
+const jsonData = fs.readFileSync('bisnis2.json');
+const jsonData2 = fs.readFileSync('teknologi.json');
+const datas = JSON.parse(jsonData);
+const datas2 = JSON.parse(jsonData2);
 
 const app = express();
-const PORT =  5000;
+const PORT = process.env.PORT || 5000;
 
 let a = ''
 let b = ''
@@ -16,7 +20,7 @@ let b = ''
 app.use(express.json());
 
 app.use(cors({
-    origin: ["", "https://www.postman.com", "http://localhost:3000","http://localhost:3001", "http://localhost:5000", "https://web-news-client.vercel.app"],
+    origin: ["", "https://www.postman.com", "http://localhost:3000","http://localhost:3001", "http://localhost:5000", "https://news-com.vercel.app"],
     methods: ["POST", "GET", "PATCH", "DELETE",'PUT', "OPTIONS"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -26,31 +30,33 @@ app.use(cors({
 // Endpoint untuk meneruskan permintaan ke API berita
 app.get('/api/news', async (req, res) => {
     try {
-      const jsonData = await readFile('./public/bisnis2.json', 'utf8');
-      const x = JSON.parse(jsonData);
-      a = x.slice(0, 7);
-      x.forEach((item) => {
-        item.publishedAt = isoToCustomFormat(item.publishedAt);
-      });
-      res.json(x.slice(0, 7));
-    } catch (error) {
-      res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json news' });
-    }
-  });
-  
-  // Endpoint untuk meneruskan permintaan ke API berita
-  app.get('/api/bisnis', async (req, res) => {
-    try {
-      const jsonData = await readFile('./public/teknologi.json', 'utf8');
-      const x = JSON.parse(jsonData);
-      b = x;
-      res.json(x);
-    } catch (error) {
-      res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json teknologi' });
-    }
-  });
 
-  
+        const x = datas
+        a = x.slice(0, 7)
+        x.forEach(item => {
+            item.publishedAt = isoToCustomFormat(item.publishedAt);
+        });
+        res.json(x.slice(0, 7));
+
+    } catch (error) {
+        res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json' });
+    }
+});
+// Endpoint untuk meneruskan permintaan ke API berita
+app.get('/api/bisnis', async (req, res) => {
+    try {
+
+        const x = datas2
+        b = x
+        
+
+        res.json(x);
+
+    } catch (error) {
+        res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json' });
+    }
+});
+
 app.get('/api/cari', async (req, res) => {
     try {
         const { author, content } = req.query;

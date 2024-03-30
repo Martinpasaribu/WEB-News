@@ -14,7 +14,7 @@ const initialState = {
 
 export const getdata = createAsyncThunk("alldata/getdata", async (res, thunkAPI) => {
     try {
-        const response = await axios.get('http://localhost:5000/api/data');
+        const response = await axios.get('https://web-news-server.vercel.app/api/data');
         // const [data1,  data2] = response.data;
         // console.log(data1); // Data pertama
         // console.log(data2); // Data kedua
