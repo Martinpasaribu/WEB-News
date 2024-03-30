@@ -26,7 +26,7 @@ app.use(cors({
 // Endpoint untuk meneruskan permintaan ke API berita
 app.get('/api/news', async (req, res) => {
     try {
-      const jsonData = await readFile('./public/bisnis2.json', 'utf8');
+      const jsonData = await readFile('/bisnis2.json', 'utf8');
       const x = JSON.parse(jsonData);
   
       // Pastikan x adalah array
