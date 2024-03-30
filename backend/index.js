@@ -24,15 +24,26 @@ app.use(cors({
 
 
 // Endpoint untuk meneruskan permintaan ke API berita
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path'; // Import modul path dengan benar
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 app.get('/api/news', async (req, res) => {
-    try {
-      const jsonData = await readFile('./public/bisnis2.json', 'utf8'); // Memperbarui jalur untuk membaca file dari direktori public
-      const x = JSON.parse(jsonData);
-      res.json(x);
-    } catch (error) {
-      res.status(500).json({ error: `Terjadi kesalahan saat mengambil data json news: ${error.message}` });
-    }
-  });
+  try {
+    const jsonData = await readFile(path.join(__dirname, 'public', 'bisnis2.json'), 'utf8'); // Gunakan path.join untuk mengonstruksi jalur file
+    const x = JSON.parse(jsonData);
+    res.json(x);
+  } catch (error) {
+    res.status(500).json({ error: `Terjadi kesalahan saat mengambil data json news: ${error.message}` });
+  }
+});
+
+
+
+
   
   // Endpoint untuk meneruskan permintaan ke API berita
   app.get('/api/bisnis', async (req, res) => {
