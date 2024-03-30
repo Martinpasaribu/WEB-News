@@ -11,7 +11,7 @@ const datas = JSON.parse(jsonData);
 const datas2 = JSON.parse(jsonData2);
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT =  5000;
 
 let a = ''
 let b = ''
