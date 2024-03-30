@@ -29,9 +29,9 @@ app.get('/api/news', async (req, res) => {
       const jsonData = await readFile('./public/bisnis2.json', 'utf8');
       const x = JSON.parse(jsonData);
       a = x.slice(0, 7);
-      x.forEach((item) => {
-        item.publishedAt = isoToCustomFormat(item.publishedAt);
-      });
+    //   x.forEach((item) => {
+    //     item.publishedAt = isoToCustomFormat(item.publishedAt);
+    //   });
       res.json(x.slice(0, 7));
     } catch (error) {
       res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json news' });
