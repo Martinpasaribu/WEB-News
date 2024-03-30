@@ -48,7 +48,7 @@ const [daftar, setDaftar] = useState([])
     dispatch(getBerita());
     dispatch(getBerita2());
     dispatch(getdata());
-
+    handleSearch()
   }, [dispatch]);
 
 

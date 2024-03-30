@@ -13,7 +13,7 @@ const initialState = {
 
 export const getBerita = createAsyncThunk("berita/getBerita", async (res, thunkAPI) => {
     try {
-        const response = await axios.get('https://web-news-server.vercel.app/api/news');
+        const response = await axios.get(`${BASE_URL}/api/news`);
         // const [data1,  data2] = response.data;
         // console.log(data1); // Data pertama
         // console.log(data2); // Data kedua

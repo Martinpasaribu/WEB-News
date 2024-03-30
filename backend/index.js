@@ -36,6 +36,7 @@ app.get('/api/news', async (req, res) => {
   try {
     const jsonData = await readFile(path.join(__dirname, 'public', 'bisnis2.json'), 'utf8'); // Gunakan path.join untuk mengonstruksi jalur file
     const x = JSON.parse(jsonData);
+    a = x;
     res.json(x);
   } catch (error) {
     res.status(500).json({ error: `Terjadi kesalahan saat mengambil data json news: ${error.message}` });
@@ -55,28 +56,52 @@ app.get('/api/news', async (req, res) => {
     }
   });
 
-  
-app.get('/api/cari', async (req, res) => {
+  app.get('/api/data', async (req, res) => {
     try {
-        const { author, content } = req.query;
 
-        let x = [ ...datas,...datas2 ]
-        const cek = x.filter(item => item.author === author || item.content === content  )
-        // Lakukan pencarian di dalam data JSON
-        const results = cek.filter(item => {
-            const authorMatch = item.author.toLowerCase().includes(author.toLowerCase());
-            // const contentMatch = item.content.toLowerCase().includes(content.toLowerCase());
-            return authorMatch || contentMatch;
-        });
+        const jsonData = await readFile(path.join(__dirname, 'public', 'bisnis2.json'), 'utf8');
+        const jsonData2 = await readFile(path.join(__dirname, 'public', 'teknologi.json'), 'utf8');
+        const datas = JSON.parse(jsonData);
+        const datas2 = JSON.parse(jsonData2);
+        let tampung = [...datas2, ...datas];
 
-        res.status(200).json(results);
-        console.log('hasil', results);
+        // Mengonversi format tanggal
+        // tampung.forEach(item => {
+        //     item.publishedAt = isoToCustomFormat(item.publishedAt);
+        // });
+
+        // res.status(200).json({ hasil: tampung }); // Perbarui penggunaan res.json()
+        res.json(tampung); // Perbarui penggunaan res.json()
+
+        
     } catch (error) {
-        console.error('Error searching products:', error);
-        res.status(500).json({ msg: 'Kesalahan data' });
+        res.status(500).json({ error: 'Terjadi kesalahan saat mengambil seluruh data ' });
     }
 });
 
+    app.get('/api/cari', async (req, res) => {
+        try {
+            const { author, content } = req.query;
+            const jsonData = await readFile(path.join(__dirname, 'public', 'bisnis2.json'), 'utf8');
+            const jsonData2 = await readFile(path.join(__dirname, 'public', 'teknologi.json'), 'utf8');
+            const datas = JSON.parse(jsonData);
+            const datas2 = JSON.parse(jsonData2);
+            let x = [ ...datas,...datas2 ]
+            const cek = x.filter(item => item.author === author || item.content === content  )
+            // Lakukan pencarian di dalam data JSON
+            const results = cek.filter(item => {
+                const authorMatch = item.author.toLowerCase().includes(author.toLowerCase());
+                // const contentMatch = item.content.toLowerCase().includes(content.toLowerCase());
+                return authorMatch || contentMatch;
+            });
+
+            res.status(200).json(results);
+            console.log('hasil', results);
+        } catch (error) {
+            console.error('Error searching products:', error);
+            res.status(500).json({ msg: 'Kesalahan data' });
+        }
+    });
 
 
 
@@ -153,21 +178,7 @@ app.get('/api/bisnis#', async (req, res) => {
     }
 });
 
-app.get('/api/data', async (req, res) => {
-    try {
-        let tampung = [...b, ...a  ];
 
-        // Mengonversi format tanggal
-        tampung.forEach(item => {
-            item.publishedAt = isoToCustomFormat(item.publishedAt);
-        });
-
-        res.json(tampung);
-       
-    } catch (error) {
-        res.status(500).json({ error: 'Terjadi kesalahan saat mengambil seluruh data berita' });
-    }
-});
 
 // Fungsi untuk mengonversi format ISO 8601 ke format yang diinginkan
 const isoToCustomFormat = (isoDateString) => {
