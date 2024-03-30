@@ -4,8 +4,14 @@ import axios from 'axios'
 import cors from 'cors'
 import fs from 'fs'
 import { readFile, writeFile } from 'fs/promises'; // Gunakan fs/promises untuk operasi baca tulis asinkron
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path'; // Import modul path dengan benar
 
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = express();
 const PORT =  5000;
 
@@ -24,12 +30,7 @@ app.use(cors({
 
 
 // Endpoint untuk meneruskan permintaan ke API berita
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import path from 'path'; // Import modul path dengan benar
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 app.get('/api/news', async (req, res) => {
   try {
@@ -41,19 +42,16 @@ app.get('/api/news', async (req, res) => {
   }
 });
 
-
-
-
   
   // Endpoint untuk meneruskan permintaan ke API berita
   app.get('/api/bisnis', async (req, res) => {
     try {
-      const jsonData = await readFile('/public/teknologi.json', 'utf8');
+        const jsonData = await readFile(path.join(__dirname, 'public', 'teknologi.json'), 'utf8');
       const x = JSON.parse(jsonData);
       b = x;
       res.json(x);
     } catch (error) {
-      res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json teknologi' });
+        res.status(500).json({ error: `Terjadi kesalahan saat mengambil data json teknologi: ${error.message}` });
     }
   });
 
