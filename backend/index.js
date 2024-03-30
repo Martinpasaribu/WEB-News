@@ -4,11 +4,17 @@ import axios from 'axios'
 import cors from 'cors'
 import fs from 'fs'
 
-// Baca isi file JSON
-const jsonData = fs.readFileSync('bisnis2.json');
-const jsonData2 = fs.readFileSync('teknologi.json');
-const datas = JSON.parse(jsonData);
-const datas2 = JSON.parse(jsonData2);
+// // Baca isi file JSON
+// const jsonData = fs.readFileSync('bisnis2.json');
+// const jsonData2 = fs.readFileSync('teknologi.json');
+
+
+// const datas = JSON.parse(jsonData);
+// const datas2 = JSON.parse(jsonData2);
+
+
+const datas = require('./public/bisnis2.json');
+const datas2 = require('./public/teknologi.json');
 
 const app = express();
 const PORT =  5000;
