@@ -49,6 +49,8 @@ app.get('/api/news', async (req, res) => {
       res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json' });
     }
   });
+
+  
 app.get('/api/cari', async (req, res) => {
     try {
         const { author, content } = req.query;
