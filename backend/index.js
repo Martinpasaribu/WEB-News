@@ -3,18 +3,8 @@ import  express from 'express';
 import axios from 'axios'
 import cors from 'cors'
 import fs from 'fs'
+import { readFile, writeFile } from 'fs/promises'; // Gunakan fs/promises untuk operasi baca tulis asinkron
 
-// // Baca isi file JSON
-// const jsonData = fs.readFileSync('bisnis2.json');
-// const jsonData2 = fs.readFileSync('teknologi.json');
-
-
-// const datas = JSON.parse(jsonData);
-// const datas2 = JSON.parse(jsonData2);
-
-
-const datas = require('./public/bisnis2.json');
-const datas2 = require('./public/teknologi.json');
 
 const app = express();
 const PORT =  5000;
@@ -36,33 +26,29 @@ app.use(cors({
 // Endpoint untuk meneruskan permintaan ke API berita
 app.get('/api/news', async (req, res) => {
     try {
-
-        const x = datas
-        a = x.slice(0, 7)
-        x.forEach(item => {
-            item.publishedAt = isoToCustomFormat(item.publishedAt);
-        });
-        res.json(x.slice(0, 7));
-
+      const jsonData = await readFile('./public/bisnis2.json', 'utf8');
+      const x = JSON.parse(jsonData);
+      a = x.slice(0, 7);
+      x.forEach((item) => {
+        item.publishedAt = isoToCustomFormat(item.publishedAt);
+      });
+      res.json(x.slice(0, 7));
     } catch (error) {
-        res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json' });
+      res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json' });
     }
-});
-// Endpoint untuk meneruskan permintaan ke API berita
-app.get('/api/bisnis', async (req, res) => {
+  });
+  
+  // Endpoint untuk meneruskan permintaan ke API berita
+  app.get('/api/bisnis', async (req, res) => {
     try {
-
-        const x = datas2
-        b = x
-        
-
-        res.json(x);
-
+      const jsonData = await readFile('./public/teknologi.json', 'utf8');
+      const x = JSON.parse(jsonData);
+      b = x;
+      res.json(x);
     } catch (error) {
-        res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json' });
+      res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data json' });
     }
-});
-
+  });
 app.get('/api/cari', async (req, res) => {
     try {
         const { author, content } = req.query;
