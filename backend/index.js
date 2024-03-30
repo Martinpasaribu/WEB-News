@@ -37,7 +37,7 @@ app.get('/api/news', async (req, res) => {
   // Endpoint untuk meneruskan permintaan ke API berita
   app.get('/api/bisnis', async (req, res) => {
     try {
-      const jsonData = await readFile('./public/teknologi.json', 'utf8');
+      const jsonData = await readFile('/public/teknologi.json', 'utf8');
       const x = JSON.parse(jsonData);
       b = x;
       res.json(x);
