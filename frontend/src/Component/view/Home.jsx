@@ -40,7 +40,8 @@ const [compare, seTCompare] = useState([])
 const [datasimpan, setDatasimpan] = useState([])
 
 const [daftar, setDaftar] = useState([])
-
+const [riwayat, setRiwayat] = useState([])
+const [sisikan, setSisikan] = useState([])
 
 
     
@@ -63,15 +64,75 @@ const [daftar, setDaftar] = useState([])
 
   useEffect (() => {
     simpan();
-    simpandata()
-
+    // simpandata()
     console.log('Data yang disimpan :',datasimpan)
     console.log('Data yang sudah ada :',daftar)
-  },[Data],[cek],[daftar],[compare])
+
+  },[Data],[cek],[daftar],[compare],[riwayat])
 
 
+     // Filter Simpan data 1
+    useEffect (()=> {
+        
+        const a = daftar.filter(items => !sisikan.some(item => item.title === items.title ) )
+        setSisikan (prev => [...prev,...a])
+
+        if(!daftar){
+            localStorage.removeItem('data');
+        }
+    },[daftar],[sisikan])
 
 
+    // Menyimpan data yang disimpan kedalam local storage
+    useEffect(() => {
+            const savean = () => {
+                if(sisikan){
+                    const dataFromLocalStorage = localStorage.getItem('data');
+                    if (dataFromLocalStorage) {
+                        const existingData = JSON.parse(dataFromLocalStorage);
+                        const newData = [...existingData, ...daftar.filter(item => !existingData.some(existingItem => existingItem.title === item.title))];
+                        localStorage.setItem('data', JSON.stringify(newData));
+                    } else {
+                        localStorage.setItem('data', JSON.stringify(daftar));
+                    }
+                    }
+                else if (!sisikan){
+                    localStorage.removeItem('data');
+                }
+            }
+            savean();
+        },);
+
+
+ // Mengambil data dari localstorage
+    useEffect (() => {
+        const olah = () => {
+            const data = localStorage.getItem('data');
+            if (data) {
+                setRiwayat(JSON.parse(data));
+            };
+        }
+        olah()
+
+    },[sisikan])
+
+
+    // Filter Simpan data 1
+    const simpandatabaca = () => {
+        if(cek){
+
+            let b = cek.filter(items => !daftar.some(item => item.title === items.title ) )
+          
+            setDaftar(pref => [...pref, ...b]);   
+   
+        }
+        togleshow()
+        setTimeout(() => {
+            showMessageberhasil()
+        }, 500);
+    }
+
+    // simpan data yang diclick
     const simpan = () => {
 
         const x = cek && cek.length > 0 ? cek[0].author : 0;
@@ -115,11 +176,7 @@ const [daftar, setDaftar] = useState([])
     setShowCari(!showCari);
   };
 
-  const perbaharui = () => {
-    setSearchResultsLoaded(false)
-}
-
-    const handleSearch = async () => {
+  const handleSearch = async () => {
         try {
         if (searchQuery !== null && searchQuery !== undefined && searchQuery !== ''){
         const response = await axios.get(`${BASE_URL}/api/cari`, {
@@ -143,41 +200,17 @@ const [daftar, setDaftar] = useState([])
         }
     };
 
+//   const perbaharui = () => {
+//     setSearchResultsLoaded(false)
+// }
 
-    // Simpan data
+// Simpan data
 
-    const simpandata = (datanya) => {
-        setDatasimpan(datanya)
+// const simpandata = (datanya) => {
+//     setDatasimpan(datanya)
+// }
 
 
-    }
-    const simpandatabaca = (datanya) => {
-        if(cek){
-
-            let sisikan = cek.filter(items => !daftar.some(item => item.title === items.title ))
-          
-            setDaftar(pref => [...pref, ...sisikan]);
-
-            
-        }
-        togleshow()
-        setTimeout(() => {
-            showMessageberhasil()
-        }, 500);
-
-    }
-    // const simpandatabaca = () => {
-    //     if (cek) {
-    //         // Filter data cek sehingga hanya data yang belum ada di daftar yang disimpan
-    //         let sisikan = cek.filter(item => !daftar.some(existingItem => existingItem.title === item.title));
-    
-    //         // Menyisipkan data yang telah difilter ke dalam daftar
-    //         setDaftar(prevDaftar => [...prevDaftar, ...sisikan]);
-            
-    //         // Output untuk keperluan debugging
-    //         console.log('hasil sisisipkan: ', sisikan);
-    //     }
-    // }
 
     
     const firstHalf = berita ? berita.slice(0, 1) : [];
@@ -285,7 +318,7 @@ const [daftar, setDaftar] = useState([])
                 <div className=' overflow-hidden h-[23rem] dm:h-[29.5rem] dm:w-1/2 w-1/2'>
                 { firstHalf && firstHalf.map((item, index) => (
                     <div key={index}  className='h-1/2 dm:h-full  flex flex-col justify-end rounded-2xl m-1' style={{backgroundImage: `url(${item.urlToImage})`,  backgroundRepeat: 'no-repeat', backgroundSize: '100%', backgroundPosition: 'center'}}>
-                        <div onClick={() => { data(item.author); togleshow();  }} className='bg-black h-[5rem] dm:h-[14rem]  dm:w-full flex flex-col rounded-b-lg dm:rounded-b-2xl bg-opacity-40 '>
+                        <div onClick={() => { data(item.author); togleshow(); }} className='bg-black h-[5rem] dm:h-[14rem]  dm:w-full flex flex-col rounded-b-lg dm:rounded-b-2xl bg-opacity-40 '>
                             <div className='w-[] dm:w-[27.8rem] h-[2rem] dm:h-[4rem]   px-2'>
                                 <h1 className='text-justify text-[9px] dm:text-[17px] text-white font-bold'>{item.title}</h1>
                             </div>
@@ -340,7 +373,7 @@ const [daftar, setDaftar] = useState([])
                 <div className='overflow-hidden h-[22.5rem] dm:h-[29.5rem] dm:w-2/3 w-1/2 grid grid-cols-1 dm:grid-cols-2 ' >
                 { a && a.map((item, index) => (
                     <div className='dm:h-[14.5rem] h-[7rem] flex flex-col justify-end rounded-2xl m-1' style={{backgroundImage: `url(${item.urlToImage})`,  backgroundRepeat: 'no-repeat', backgroundSize: '100%', backgroundPosition: 'center'}}>
-                        <div onClick={() => { data(item.author); togleshow();  }} className='bg-black flex flex-col rounded-b-lg dm:rounded-b-2xl bg-opacity-40'>
+                        <div onClick={() => { data(item.author); togleshow();}} className='bg-black flex flex-col rounded-b-lg dm:rounded-b-2xl bg-opacity-40'>
                             <div className='w-[] dm:w-[18.4rem] h-[2rem] dm:h-[4rem] px-1 '>
                                 <h1 className='text-justify text-[9px] dm:text-[14px] text-white font-bold'>{item.title}</h1>
                             </div>
@@ -541,7 +574,7 @@ const [daftar, setDaftar] = useState([])
                           <div className='overflow-auto'>
                           <h1 className='mx-auto text-center dm:m-2 m-1 text-white font-bold'>SAVE </h1>
                             <div className='grid grid-cols-2  gap-2'>
-                            { daftar && daftar.map((item, index)=> (
+                            { riwayat && riwayat.map((item, index)=> (
                                 <div key={index} className='  w-[10rem] h-[10rem] dm:w-[18rem] dm:h-[18rem]  rounded-lg'>
                                 <a href={item.url} target="_blank" rel="noopener noreferrer">
                                     <div className='flex justify-center items-end w-[10rem] h-[10rem] dm:w-[18rem] dm:h-[15rem] rounded-lg' style={{backgroundImage: `url(${item.urlToImage})`,  backgroundRepeat: 'no-repeat', backgroundSize: '100%', backgroundPosition: 'center'}}>
